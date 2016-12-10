@@ -10,9 +10,9 @@ export class ModalContasPage {
   view: any;
   conta: any;
 
-  constructor(viewCtrl: ViewController) {
+  constructor(viewCtrl: ViewController, params: NavParams) {
     this.view = viewCtrl;
-    this.conta = {descricao:""};
+    this.conta = params.get("parametro") || { descricao: ""};
   }
 
   cancel() {

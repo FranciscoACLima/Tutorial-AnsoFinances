@@ -20,12 +20,23 @@ export class ContasPage {
   }
 
   insert() {
-    console.log('botao insert foi clicado');
     let modal = this.modalCtrl.create(ModalContasPage);
     modal.onDidDismiss(data => {
       this.dao.insert(data);
     });
     modal.present();
+  }
+
+  edit(conta) {
+    let modal = this.modalCtrl.create(ModalContasPage, {parametro: conta});
+    modal.onDidDismiss(data => {
+      this.dao.edit(data);
+    });
+    modal.present();
+  }
+
+  delete(conta) {
+    this.dao.delete(conta);
   }
 
 }

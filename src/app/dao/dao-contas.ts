@@ -26,6 +26,7 @@ export class DAOContas {
   }
 
   delete(conta) {
-
+    let pos = this.list.indexOf(conta);
+    this.list.splice(pos, 1);
   }
 }
