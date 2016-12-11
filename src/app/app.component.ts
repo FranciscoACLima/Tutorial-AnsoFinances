@@ -10,7 +10,7 @@ import { ContasPage} from '../pages/contas/contas';
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage = ContasPage;
+  rootPage = HomePage;
 
   home = HomePage;
   contas = ContasPage

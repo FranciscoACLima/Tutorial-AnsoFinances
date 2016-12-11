@@ -13,8 +13,8 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item-sliding *ngFor="let item of listContas" (click)="edit(item)">
-      <ion-item>
+    <ion-item-sliding *ngFor="let item of listContas">
+      <ion-item  (click)="edit(item)">
         {{item.descricao}}
       </ion-item>
       <ion-item-options>
