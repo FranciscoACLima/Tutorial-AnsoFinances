@@ -7,13 +7,9 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  nome = 'AnsoDev';
+
   constructor(public navCtrl: NavController) {
 
-  }
-
-  getNome() {
-    return 'Retornado pelo método getNome()';
   }
 
 }
