@@ -1,22 +1,48 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { Toast } from 'ionic-native';
+import { NavController, ModalController } from 'ionic-angular';
 
-/*
-  Generated class for the Lancamentos page.
+import { ModalLancamentoPage } from '../modal-lancamento/modal-lancamento';
+import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-lancamentos',
   templateUrl: 'lancamentos.html'
 })
-export class LancamentosPage {
+export class LancamentosPage implements OnInit{
 
-  constructor(public navCtrl: NavController) {}
+  dao: any;
+  listLancamentos: any;
 
-  ionViewDidLoad() {
-    console.log('Hello LancamentosPage Page');
+  constructor(
+    public modalCtrl: ModalController,
+    public navCtrl: NavController
+  ) {
+    this.modalCtrl = modalCtrl;
+    this.dao = new DAOLancamentos;
+  }
+
+  ngOnInit() {
+    this.dao.getList((lista) => {
+      console.log(lista);
+      this.listLancamentos = lista;
+    });
+  }
+
+  insert() {
+    let modal = this.modalCtrl.create(ModalLancamentoPage);
+    modal.onDidDismiss(data => {
+      if (data) {
+        this.dao.insert(data, (data) => {
+          this.listLancamentos.push(data);
+          Toast.showShortBottom("Lançamento Inserido Com Sucesso !").subscribe(
+            toast => {
+              console.log(toast);
+            });
+        });
+      }
+    });
+    modal.present();
   }
 
 }

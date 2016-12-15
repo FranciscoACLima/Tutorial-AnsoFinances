@@ -4,6 +4,9 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ContasPage } from '../pages/contas/contas';
 import { ModalContasPage } from '../pages/modal-contas/modal-contas';
+import { LancamentosPage } from '../pages/lancamentos/lancamentos';
+import { ModalLancamentoPage } from '../pages/modal-lancamento/modal-lancamento';
+
 
 @NgModule({
   declarations: [
@@ -11,6 +14,8 @@ import { ModalContasPage } from '../pages/modal-contas/modal-contas';
     HomePage,
     ContasPage,
     ModalContasPage,
+    LancamentosPage,
+    ModalLancamentoPage,
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -21,6 +26,8 @@ import { ModalContasPage } from '../pages/modal-contas/modal-contas';
     HomePage,
     ContasPage,
     ModalContasPage,
+    LancamentosPage,
+    ModalLancamentoPage,
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

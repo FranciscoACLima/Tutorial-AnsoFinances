@@ -4,7 +4,6 @@ import {SQLite} from 'ionic-native';
 
 export class DAOContas {
 
-  list = [];
   database: any;
 
   constructor() {

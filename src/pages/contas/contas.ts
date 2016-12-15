@@ -25,6 +25,7 @@ export class ContasPage {
     this.alertCtrl = alertCtrl;
     this.navCtrl = navCtrl;
     this.dao = new DAOContas;
+    //trocar para getList() quando for fazer build
     this.dao.getList((lista) => {
       this.listContas = lista;
     });
