@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Toast } from 'ionic-native';
-import { NavController, ModalController } from 'ionic-angular';
+import { ModalController, AlertController, NavController} from 'ionic-angular';
 
 import { ModalLancamentoPage } from '../modal-lancamento/modal-lancamento';
 import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
@@ -16,15 +16,15 @@ export class LancamentosPage implements OnInit{
 
   constructor(
     public modalCtrl: ModalController,
+    public alertCtrl: AlertController,
     public navCtrl: NavController
   ) {
-    this.modalCtrl = modalCtrl;
-    this.dao = new DAOLancamentos;
+
   }
 
   ngOnInit() {
+    this.dao = new DAOLancamentos;
     this.dao.getList((lista) => {
-      console.log(lista);
       this.listLancamentos = lista;
     });
   }
@@ -44,5 +44,59 @@ export class LancamentosPage implements OnInit{
     });
     modal.present();
   }
+
+  edit(lancamento) {
+    let modal = this.modalCtrl.create(ModalLancamentoPage, {parametro: lancamento});
+    modal.onDidDismiss(data => {
+      if (data) {
+        this.dao.edit(data, (data) => {
+          Toast.showShortBottom("Lançamento Alterado Com Sucesso !").subscribe(
+            toast => {
+              console.log(toast);
+            });
+        });
+      } else {
+        this.dao.getList((lista) => {
+          this.listLancamentos = lista;
+        });
+      }
+    });
+    modal.present();
+  }
+
+  delete(lancamento) {
+    let confirm = this.alertCtrl.create({
+      title: 'Excluir Conta',
+      message: "Gostaria realmente de excluir o Lançamento: " + lancamento.descricao + "?",
+      buttons: [
+        {
+          text: 'Sim',
+          handler: () => {
+            this.dao.delete(lancamento, (data) => {
+              let pos = this.listLancamentos.indexOf(data);
+              this.listLancamentos.splice(pos, 1);
+              Toast.showShortBottom("Lançamento Excluído Com Sucesso !").subscribe(
+                toast => {
+                  console.log(toast);
+                });
+            });
+          }
+        },
+        {
+          text: 'Não',
+          role: 'cancel',
+          handler: () => {
+            console.log('Exclusão Cancelada');
+          }
+        },
+      ]
+    });
+    this.navCtrl.push(confirm);
+  }
+
+  lancamentoEntrada(lancamento) {
+    return lancamento.entradaSaida == "entrada";
+  }
+
 
 }

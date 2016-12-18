@@ -1,5 +1,3 @@
-import { Component } from '@angular/core';
-
 import {SQLite} from 'ionic-native';
 
 export class DAOContas {

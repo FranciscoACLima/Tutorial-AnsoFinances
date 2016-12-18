@@ -9,7 +9,8 @@
 
 <ion-content padding>
   <ion-list>
-      <ion-item *ngFor="let item of listLancamentos">
+    <ion-item-sliding *ngFor="let item of listLancamentos">
+      <ion-item  [ngClass]="{entrada: lancamentoEntrada(item), saida: !lancamentoEntrada(item)}" (click)="edit(item)">
         <ion-row>
           <ion-col width-67>
             <h2>{{item.descricao}}</h2>
@@ -17,22 +18,29 @@
               {{item.conta}}
             </p>
             <p>
-              {{item.data}}
+              {{item.data | date:'dd/MM/yyyy'}}
+
             </p>
           </ion-col>
 
           <ion-col width-33>
             <p>
-              {{item.valor}}
+              {{item.valor | currency:'BRL':true}}
             </p>
             <p>
-              {{item.entradaSaida}}
+              {{item.pago | statusPgto}}
             </p>
           </ion-col>
         </ion-row>
       </ion-item>
-    </ion-list>
-  <!-- Botão Adicionar Conta -->
+      <ion-item-options>
+        <button  (click)="delete(item)" ion-button color="danger">
+          Excluir
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <!-- Botão Adicionar Lançamento -->
   <ion-fab bottom right >
     <button ion-fab color="danger" (click)="insert()">
       <ion-icon name="add"></ion-icon>

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Toast } from 'ionic-native';
-
 import { ModalController, AlertController, NavController} from 'ionic-angular';
 import { DAOContas } from '../../app/dao/dao-contas';
 import { ModalContasPage} from '../modal-contas/modal-contas';
@@ -12,18 +11,12 @@ import { ModalContasPage} from '../modal-contas/modal-contas';
 export class ContasPage {
   dao: any;
   listContas: any;
-  modalCtrl: any;
-  alertCtrl: any;
-  navCtrl: any;
 
   constructor(
-    modalCtrl: ModalController,
-    alertCtrl: AlertController,
-    navCtrl: NavController
+    public modalCtrl: ModalController,
+    private alertCtrl: AlertController,
+    public navCtrl: NavController
   ) {
-    this.modalCtrl = modalCtrl;
-    this.alertCtrl = alertCtrl;
-    this.navCtrl = navCtrl;
     this.dao = new DAOContas;
     //trocar para getList() quando for fazer build
     this.dao.getList((lista) => {
@@ -67,7 +60,7 @@ export class ContasPage {
   }
 
   delete(conta) {
-    let confirm = new this.alertCtrl.create({
+    let confirm = this.alertCtrl.create({
       title: 'Excluir Conta',
       message: "Gostaria realmente de excluir a conta: " + conta.descricao + "?",
       buttons: [

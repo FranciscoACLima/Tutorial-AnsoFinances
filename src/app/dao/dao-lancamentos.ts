@@ -1,10 +1,8 @@
-import { Component } from '@angular/core';
-
 import {SQLite} from 'ionic-native';
 
 export class DAOLancamentos {
 
-  database: any;
+  database: SQLite;
 
   constructor() {
     this.database = new SQLite();
@@ -13,10 +11,10 @@ export class DAOLancamentos {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         descricao TEXT,
         valor REAL,
-        data INTEGER,
+        data TEXT,
         conta TEXT,
         entradaSaida TEXT,
-        pago INTEGER)
+        pago TEXT)
     `;
     this.database.openDatabase({
       name: "data.db",
@@ -34,14 +32,13 @@ export class DAOLancamentos {
   }
 
   getList(sucessCallBack) {
-    let database = new SQLite();
     let sqlQuery = "SELECT * FROM lancamentos";
     let list = [];
-    database.openDatabase({
+    this.database.openDatabase({
       name: "data.db",
       location: "default"
     }).then(() => {
-      database.executeSql(sqlQuery, []).then((data) => {
+      this.database.executeSql(sqlQuery, []).then((data) => {
         console.log("Qtde de Lançamentos: " + JSON.stringify(data.length));
         console.log("Lancamentos" + JSON.stringify(data));
         if(data.rows.length > 0) {
@@ -86,11 +83,40 @@ export class DAOLancamentos {
     });
   }
 
-  edit() {
-
+  edit(lancamento, successCallback) {
+    let sqlQuery = `UPDATE lancamentos
+      SET
+        descricao = ?,
+        valor = ?,
+        data = ?,
+        conta = ?,
+        entradaSaida = ?,
+        pago = ?
+      WHERE id = ?;
+    `
+    this.database.executeSql(sqlQuery, [
+      lancamento.descricao,
+      lancamento.valor,
+      lancamento.data,
+      lancamento.conta,
+      lancamento.entradaSaida,
+      lancamento.pago,
+      lancamento.id
+    ]).then((data) => {
+        lancamento.id = data.insertId;
+        successCallback(lancamento);
+    }, (error) => {
+        console.log("ERRO na atualização do Lançamento: " + JSON.stringify(error.err));
+    });
   }
 
-  delete() {
-
+  delete(lancamento, successCallback) {
+    let sqlQuery = "DELETE FROM lancamentos WHERE id = ?";
+    this.database.executeSql(sqlQuery, [lancamento.id]).then((data) => {
+        successCallback(lancamento);
+    }, (error) => {
+        console.log("ERRO na exclusão do Lançamento: " + JSON.stringify(error.err));
+    });
   }
+
 }
