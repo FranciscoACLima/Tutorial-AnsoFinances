@@ -5,63 +5,67 @@ export class DAOLancamentos {
   database: SQLite;
 
   constructor() {
-    this.database = new SQLite();
-    let createSql = `
-      CREATE TABLE IF NOT EXISTS lancamentos(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        descricao TEXT,
-        valor REAL,
-        data TEXT,
-        conta TEXT,
-        entradaSaida TEXT,
-        pago TEXT)
-    `;
-    this.database.openDatabase({
-      name: "data.db",
-      location: "default"
-    }).then(() => {
-      this.database.executeSql(createSql, {}).then((data) => {
-        console.log("Tabela Criada: ", data);
+    setTimeout(function() {
+      this.database = new SQLite();
+      let createSql = `
+        CREATE TABLE IF NOT EXISTS lancamentos(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          descricao TEXT,
+          valor REAL,
+          data TEXT,
+          conta TEXT,
+          entradaSaida TEXT,
+          pago TEXT)
+      `;
+      this.database.openDatabase({
+        name: "data.db",
+        location: "default"
+      }).then(() => {
+        this.database.executeSql(createSql, {}).then((data) => {
+          console.log("Tabela Criada: ", data);
+        }, (error) => {
+          console.error("Erro na execução do sql", error);
+        })
       }, (error) => {
-        console.error("Erro na execução do sql", error);
-      })
-    }, (error) => {
-      console.error("Erro na abertura do banco de dados", error);
-    });
-
+        console.error("Erro na abertura do banco de dados", error);
+      });
+    }, 1000);
   }
 
   getList(sucessCallBack) {
-    let sqlQuery = "SELECT * FROM lancamentos";
-    let list = [];
-    this.database.openDatabase({
-      name: "data.db",
-      location: "default"
-    }).then(() => {
-      this.database.executeSql(sqlQuery, []).then((data) => {
-        console.log("Qtde de Lançamentos: " + JSON.stringify(data.length));
-        console.log("Lancamentos" + JSON.stringify(data));
-        if(data.rows.length > 0) {
-          for(var i = 0; i < data.rows.length; i++) {
-            let lancamento = {
-            id: data.rows.item(i).id,
-            descricao: data.rows.item(i).descricao,
-            valor: data.rows.item(i).valor,
-            data: data.rows.item(i).data,
-            conta: data.rows.item(i).conta,
-            entradaSaida: data.rows.item(i).entradaSaida,
-            pago: data.rows.item(i).pago
-            };
-            list.push(lancamento);
+    setTimeout(function() {
+      //this.database = new SQLite();
+      let sqlQuery = "SELECT * FROM lancamentos";
+      let list = [];
+      this.database.openDatabase({
+        name: "data.db",
+        location: "default"
+      }).then(() => {
+        this.database.executeSql(sqlQuery, []).then((data) => {
+          console.log("Qtde de Lançamentos: " + JSON.stringify(data.length));
+          console.log("Lancamentos" + JSON.stringify(data));
+          if(data.rows.length > 0) {
+            for(var i = 0; i < data.rows.length; i++) {
+              let lancamento = {
+              id: data.rows.item(i).id,
+              descricao: data.rows.item(i).descricao,
+              valor: data.rows.item(i).valor,
+              data: data.rows.item(i).data,
+              conta: data.rows.item(i).conta,
+              entradaSaida: data.rows.item(i).entradaSaida,
+              pago: data.rows.item(i).pago
+              };
+              list.push(lancamento);
+            }
+            sucessCallBack(list);
           }
-          sucessCallBack(list);
-        }
+        }, (error) => {
+          console.log("getList() - ERRO na leitura da Tabela: " + JSON.stringify(error));
+        });
       }, (error) => {
-        console.log("ERRO na leitura da Tabela: " + JSON.stringify(error));
+        console.error("getList() - Erro na abertura do banco de dados", error);
       });
-    }, (error) => {
-      console.error("Erro na abertura do banco de dados", error);
-    });
+    }, 1200);
   }
 
   insert(lancamento, sucessCallBack) {
