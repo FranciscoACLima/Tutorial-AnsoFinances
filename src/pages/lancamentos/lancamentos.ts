@@ -1,40 +1,67 @@
 import { Component, OnInit} from '@angular/core';
 import { Toast } from 'ionic-native';
-import { ModalController, AlertController, NavController} from 'ionic-angular';
+import { ModalController, AlertController, NavController, Events} from 'ionic-angular';
 
 import { ModalLancamentoPage } from '../modal-lancamento/modal-lancamento';
 import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
 
 @Component({
   selector: 'page-lancamentos',
-  templateUrl: 'lancamentos.html'
+  templateUrl: 'lancamentos.html',
 })
 export class LancamentosPage implements OnInit{
 
   dao: any;
   listLancamentos: any;
+  dataFiltro: Date;
 
   constructor(
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    public events: Events
   ) {
-
+    this.events = events;
   }
 
   ngOnInit() {
+    this.dataFiltro = new Date();
     this.dao = new DAOLancamentos;
-    this.dao.getList((lista) => {
+    this.getListaLancamentos();
+  }
+
+  getListaLancamentos() {
+    let dataInicio = this._getInicioDoMes(this.dataFiltro);
+    let proxMes = new Date(this.dataFiltro);;
+    proxMes.setMonth(proxMes.getMonth() + 1);
+    let dataFim = this._getInicioDoMes(proxMes);
+    this.dao.getList(dataInicio, dataFim, (lista) => {
       this.listLancamentos = lista;
     });
+  }
+
+  private _getInicioDoMes(data: Date) {
+    let ano = data.getFullYear();
+    let mes = data.getMonth() + 1;
+    return ano + '-' + mes + '-01';
+  }
+
+  onClickMonth() {
+
+  }
+
+  updateMonth(data) {
+    this.listLancamentos = [];
+    this.dataFiltro = data;
+    this.getListaLancamentos();
   }
 
   insert() {
     let modal = this.modalCtrl.create(ModalLancamentoPage);
     modal.onDidDismiss(data => {
       if (data) {
-        this.dao.insert(data, (data) => {
-          this.listLancamentos.push(data);
+        this.dao.insert(data, (lancamento) => {
+          this.updateMonth(new Date(lancamento.data));
           Toast.showShortBottom("Lançamento Inserido Com Sucesso !").subscribe(
             toast => {
               console.log(toast);
@@ -49,7 +76,8 @@ export class LancamentosPage implements OnInit{
     let modal = this.modalCtrl.create(ModalLancamentoPage, {parametro: lancamento});
     modal.onDidDismiss(data => {
       if (data) {
-        this.dao.edit(data, (data) => {
+        this.dao.edit(lancamento, (lancamento) => {
+          this.updateMonth(new Date(lancamento.data));
           Toast.showShortBottom("Lançamento Alterado Com Sucesso !").subscribe(
             toast => {
               console.log(toast);
@@ -72,9 +100,8 @@ export class LancamentosPage implements OnInit{
         {
           text: 'Sim',
           handler: () => {
-            this.dao.delete(lancamento, (data) => {
-              let pos = this.listLancamentos.indexOf(data);
-              this.listLancamentos.splice(pos, 1);
+            this.dao.delete(lancamento, (lancamento) => {
+              this.updateMonth(new Date(lancamento.data));
               Toast.showShortBottom("Lançamento Excluído Com Sucesso !").subscribe(
                 toast => {
                   console.log(toast);
