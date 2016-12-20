@@ -78,13 +78,15 @@ export class DAOLancamentos {
         entradaSaida,
         pago) VALUES (?, ?, ?, ?, ?, ?)
     `;
-    this.database.executeSql(sqlQuery, [lancamento.descricao, lancamento.valor, lancamento.data,
-      lancamento.conta, lancamento.entradaSaida, lancamento.pago]).then((data) => {
-        lancamento.id = data.insertId;
-        sucessCallBack(lancamento);
-    }, (error) => {
-        console.log("Erro na inserção do Lançamento: " + JSON.stringify(error.err));
-    });
+    setTimeout(function() {
+      this.database.executeSql(sqlQuery, [lancamento.descricao, lancamento.valor, lancamento.data,
+        lancamento.conta, lancamento.entradaSaida, lancamento.pago]).then((data) => {
+          lancamento.id = data.insertId;
+          sucessCallBack(lancamento);
+      }, (error) => {
+          console.log("Erro na inserção do Lançamento: " + JSON.stringify(error.err));
+      });
+    }, 1200);
   }
 
   edit(lancamento, successCallback) {
@@ -98,29 +100,33 @@ export class DAOLancamentos {
         pago = ?
       WHERE id = ?;
     `
-    this.database.executeSql(sqlQuery, [
-      lancamento.descricao,
-      lancamento.valor,
-      lancamento.data,
-      lancamento.conta,
-      lancamento.entradaSaida,
-      lancamento.pago,
-      lancamento.id
-    ]).then((data) => {
-        lancamento.id = data.insertId;
-        successCallback(lancamento);
-    }, (error) => {
-        console.log("ERRO na atualização do Lançamento: " + JSON.stringify(error.err));
-    });
+    setTimeout(function() {
+      this.database.executeSql(sqlQuery, [
+        lancamento.descricao,
+        lancamento.valor,
+        lancamento.data,
+        lancamento.conta,
+        lancamento.entradaSaida,
+        lancamento.pago,
+        lancamento.id
+      ]).then((data) => {
+          lancamento.id = data.insertId;
+          successCallback(lancamento);
+      }, (error) => {
+          console.log("ERRO na atualização do Lançamento: " + JSON.stringify(error.err));
+      });
+    }, 1200);
   }
 
   delete(lancamento, successCallback) {
-    let sqlQuery = "DELETE FROM lancamentos WHERE id = ?";
-    this.database.executeSql(sqlQuery, [lancamento.id]).then((data) => {
-        successCallback(lancamento);
-    }, (error) => {
-        console.log("ERRO na exclusão do Lançamento: " + JSON.stringify(error.err));
-    });
+    setTimeout(function() {
+      let sqlQuery = "DELETE FROM lancamentos WHERE id = ?";
+      this.database.executeSql(sqlQuery, [lancamento.id]).then((data) => {
+          successCallback(lancamento);
+      }, (error) => {
+          console.log("ERRO na exclusão do Lançamento: " + JSON.stringify(error.err));
+      });
+    }, 1200);
   }
 
 }
