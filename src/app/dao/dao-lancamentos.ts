@@ -29,7 +29,7 @@ export class DAOLancamentos {
       }, (error) => {
         console.error("Erro na abertura do banco de dados", error);
       });
-    }, 500);
+    }, 800);
   }
 
   getList(dataInicio, dataFim, sucessCallBack) {
@@ -44,7 +44,7 @@ export class DAOLancamentos {
         this.database.executeSql(sqlQuery, [dataInicio, dataFim]).then((data) => {
           console.log("Qtde de Lancamentos" + JSON.stringify(data));
           if(data.rows.length > 0) {
-            for(var i = 0; i < data.rows.length; i++) {
+            for(let i = 0; i < data.rows.length; i++) {
               let lancamento = {
               id: data.rows.item(i).id,
               descricao: data.rows.item(i).descricao,
@@ -65,8 +65,42 @@ export class DAOLancamentos {
       }, (error) => {
         console.error("getList() - Erro na abertura do banco de dados", error);
       });
-    }, 550);
+    }, 1000);
   }
+
+  getSaldo(successCallback) {
+    let sqlQuery = `
+      SELECT TOTAL(valor) as saldo, entradaSaida
+      FROM lancamentos
+      WHERE pago = 'true' AND entradaSaida = 'entrada'
+      UNION
+      SELECT TOTAL(valor) as saldo, entradaSaida
+      FROM lancamentos
+      WHERE pago = 'true' AND entradaSaida = 'saida';
+    `;
+    setTimeout(function() {
+      this.database.executeSql(sqlQuery, []).then((data) => {
+          let saldo = 0;
+          if(data.rows.length > 0) {
+            for(let i = 0; i < data.rows.length; i++) {
+              let item = {
+              saldo: data.rows.item(i).saldo,
+              entradaSaida: data.rows.item(i).entradaSaida,
+              }
+              if (item.entradaSaida == 'entrada') {
+                saldo += item.saldo;
+              } else {
+                saldo -= item.saldo;
+              }
+            }
+          }
+          successCallback(saldo);
+        }, (error) => {
+            console.log("getSaldo() - Erro carregamento do saldo: " + JSON.stringify(error.err));
+        });
+    }, 1000);
+  }
+
 
   insert(lancamento, sucessCallBack) {
     let sqlQuery = `
@@ -91,7 +125,7 @@ export class DAOLancamentos {
       }, (error) => {
           console.log("Erro na inserção do Lançamento: " + JSON.stringify(error.err));
       });
-    }, 550);
+    }, 1000);
   }
 
   edit(lancamento, successCallback) {
@@ -120,7 +154,7 @@ export class DAOLancamentos {
       }, (error) => {
           console.log("ERRO na atualização do Lançamento: " + JSON.stringify(error.err));
       });
-    }, 550);
+    }, 1000);
   }
 
   delete(lancamento, successCallback) {
@@ -131,7 +165,7 @@ export class DAOLancamentos {
       }, (error) => {
           console.log("ERRO na exclusão do Lançamento: " + JSON.stringify(error.err));
       });
-    }, 550);
+    }, 1000);
   }
 
 }

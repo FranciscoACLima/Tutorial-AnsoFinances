@@ -11,6 +11,7 @@ import { LancamentosPage } from '../pages/lancamentos/lancamentos';
 import { ModalLancamentoPage } from '../pages/modal-lancamento/modal-lancamento';
 import { StatusPgto } from '../pipes/status-pgto';
 import { DataFilterComponent} from '../components/data-filter/data-filter';
+import { SaldoPage } from '../pages/saldo/saldo';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { DataFilterComponent} from '../components/data-filter/data-filter';
     ModalLancamentoPage,
     StatusPgto,
     DataFilterComponent,
+    SaldoPage
   ],
   imports: [
     CommonModule,
@@ -36,7 +38,8 @@ import { DataFilterComponent} from '../components/data-filter/data-filter';
     ModalContasPage,
     LancamentosPage,
     ModalLancamentoPage,
-    DataFilterComponent
+    DataFilterComponent,
+    SaldoPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

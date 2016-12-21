@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>lancamentos</ion-title>
-    <button menuToggle="">
+    <ion-title>Lançamentos</ion-title>
+    <button ion-button menuToggle="">
       <ion-icon name="menu"></ion-icon>
     </button>
   </ion-navbar>
@@ -35,8 +35,11 @@
         </ion-row>
       </ion-item>
       <ion-item-options>
+        <button (click)="changePaymentStatus(item)" ion-button>
+          <ion-icon name="cash"></ion-icon>{{paymentButtonText(item)}}
+        </button>
         <button  (click)="delete(item)" ion-button color="danger">
-          Excluir
+          <ion-icon name="trash"></ion-icon>Excluir
         </button>
       </ion-item-options>
     </ion-item-sliding>

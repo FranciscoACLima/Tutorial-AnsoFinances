@@ -46,14 +46,29 @@ export class LancamentosPage implements OnInit{
     return ano + '-' + mes + '-01';
   }
 
-  onClickMonth() {
-
+  changePaymentStatus(lancamento) {
+    lancamento.pago = lancamento.pago == 'true' ? 'false' : 'true';
+    this.dao.edit(lancamento, (lancamento) => {
+      this.updateMonth(new Date(lancamento.data));
+    })
   }
+
+  paymentButtonText(lancamento) {
+    return lancamento.pago == 'true' ? "Reabrir" : "Pagar";
+  }
+
 
   updateMonth(data) {
     this.listLancamentos = [];
     this.dataFiltro = data;
     this.getListaLancamentos();
+    this.updateSaldo();
+  }
+
+  updateSaldo() {
+    this.dao.getSaldo((saldo) => {
+      this.events.publish("saldo:updated", saldo);
+    })
   }
 
   insert() {
@@ -124,6 +139,4 @@ export class LancamentosPage implements OnInit{
   lancamentoEntrada(lancamento) {
     return lancamento.entradaSaida == "entrada";
   }
-
-
 }
