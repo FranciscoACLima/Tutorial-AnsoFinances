@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Toast } from 'ionic-native';
 import { ModalController, AlertController, NavController} from 'ionic-angular';
-import { DAOContas } from '../../app/dao/dao-contas';
+import { ContaProvider } from '../../providers/conta-provider';
 import { ModalContasPage} from '../modal-contas/modal-contas';
 
 @Component({
@@ -9,16 +9,15 @@ import { ModalContasPage} from '../modal-contas/modal-contas';
   templateUrl: 'contas.html'
 })
 export class ContasPage {
-  dao: any;
+
   listContas: any;
 
   constructor(
     public modalCtrl: ModalController,
     private alertCtrl: AlertController,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    public dao: ContaProvider
   ) {
-    this.dao = new DAOContas;
-    //trocar para getList() quando for fazer build
     this.dao.getList((lista) => {
       this.listContas = lista;
     });

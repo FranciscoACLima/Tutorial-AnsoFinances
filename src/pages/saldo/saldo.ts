@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { Events } from 'ionic-angular';
-import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
+import { LancamentoProvider } from '../../providers/lancamento-provider';
 
 @Component({
   selector: 'page-saldo',
@@ -8,15 +8,16 @@ import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
 })
 export class SaldoPage implements OnInit{
 
-  dao: any;
   saldo: number;
 
-  constructor(public events: Events) {
+  constructor(
+    public events: Events,
+    private dao: LancamentoProvider
+  ) {
       //this.events = events;
-    }
+  }
 
     ngOnInit() {
-      this.dao = new DAOLancamentos();
       this.dao.getSaldo((saldo) => {
         this.saldo = saldo;
       });

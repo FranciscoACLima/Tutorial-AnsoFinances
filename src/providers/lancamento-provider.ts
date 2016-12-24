@@ -1,6 +1,9 @@
+import { Injectable } from '@angular/core';
+import 'rxjs/add/operator/map';
 import {SQLite} from 'ionic-native';
 
-export class DAOLancamentos {
+@Injectable()
+export class LancamentoProvider {
 
   database: SQLite;
 
@@ -22,50 +25,42 @@ export class DAOLancamentos {
         location: "default"
       }).then(() => {
         this.database.executeSql(createSql, {}).then((data) => {
-          console.log("Tabela Criada: ", data);
+          console.log("Tabela lancamentos Criada: ", data);
         }, (error) => {
-          console.error("Erro na execução do sql", error);
+          console.error("Erro na criação da tabela lancamentos", error);
         })
       }, (error) => {
-        console.error("Erro na abertura do banco de dados", error);
+        console.error("Erro na abertura do banco de dados: lancamentos", error);
       });
-    }, 800);
+    }, 600);
   }
 
   getList(dataInicio, dataFim, successCallback) {
     setTimeout(function() {
-      //this.database = new SQLite();
       let sqlQuery = "SELECT * FROM lancamentos WHERE data >= ? and data <= ?";
       let list = [];
-      this.database.openDatabase({
-        name: "data.db",
-        location: "default"
-      }).then(() => {
-        this.database.executeSql(sqlQuery, [dataInicio, dataFim]).then((data) => {
-          //console.log("Qtde de Lancamentos" + JSON.stringify(data));
-          if(data.rows.length > 0) {
-            for(let i = 0; i < data.rows.length; i++) {
-              let lancamento = {
-              id: data.rows.item(i).id,
-              descricao: data.rows.item(i).descricao,
-              valor: data.rows.item(i).valor,
-              data: data.rows.item(i).data,
-              conta: data.rows.item(i).conta,
-              entradaSaida: data.rows.item(i).entradaSaida,
-              pago: data.rows.item(i).pago
-              };
-              list.push(lancamento);
-            }
-            //console.log(list);
-            successCallback(list);
+      this.database.executeSql(sqlQuery, [dataInicio, dataFim]).then((data) => {
+        //console.log("Qtde de Lancamentos" + JSON.stringify(data));
+        if(data.rows.length > 0) {
+          for(let i = 0; i < data.rows.length; i++) {
+            let lancamento = {
+            id: data.rows.item(i).id,
+            descricao: data.rows.item(i).descricao,
+            valor: data.rows.item(i).valor,
+            data: data.rows.item(i).data,
+            conta: data.rows.item(i).conta,
+            entradaSaida: data.rows.item(i).entradaSaida,
+            pago: data.rows.item(i).pago
+            };
+            list.push(lancamento);
           }
-        }, (error) => {
-          console.log("getList() - ERRO na leitura da Tabela: " + JSON.stringify(error));
-        });
+          //console.log(list);
+          successCallback(list);
+        }
       }, (error) => {
-        console.error("getList() - Erro na abertura do banco de dados", error);
+        console.log("getList() - ERRO na leitura da Tabela: " + JSON.stringify(error));
       });
-    }, 1000);
+    }, 100);
   }
 
   getListGroupByConta(dataInicio, dataFim, entradaSaida, successCallback) {
@@ -76,35 +71,28 @@ export class DAOLancamentos {
       and pago = 'true'
       GROUP BY conta`;
       let list = [];
-      this.database.openDatabase({
-        name: "data.db",
-        location: "default"
-      }).then(() => {
-        this.database.executeSql(sqlQuery, [
-            dataInicio,
-            dataFim,
-            entradaSaida])
-        .then((data) => {
-          //console.log("Qtde Grupos de Contas" + JSON.stringify(data));
-          if(data.rows.length > 0) {
-            for(let i = 0; i < data.rows.length; i++) {
-              let conta = {
-              conta: data.rows.item(i).conta,
-              saldo: data.rows.item(i).saldoConta,
-              percentual: 0.0
-              };
-              list.push(conta);
-            }
-            //console.log(list);
-            successCallback(list);
+      this.database.executeSql(sqlQuery, [
+          dataInicio,
+          dataFim,
+          entradaSaida])
+      .then((data) => {
+        //console.log("Qtde Grupos de Contas" + JSON.stringify(data));
+        if(data.rows.length > 0) {
+          for(let i = 0; i < data.rows.length; i++) {
+            let conta = {
+            conta: data.rows.item(i).conta,
+            saldo: data.rows.item(i).saldoConta,
+            percentual: 0.0
+            };
+            list.push(conta);
           }
-        }, (error) => {
-          console.log("getList() - ERRO na leitura da Tabela: " + JSON.stringify(error));
-        });
+          //console.log(list);
+          successCallback(list);
+        }
       }, (error) => {
-        console.error("getList() - Erro na abertura do banco de dados", error);
+        console.log("getList() - ERRO na leitura da Tabela: " + JSON.stringify(error));
       });
-    }, 1000);
+    }, 100);
   }
 
 
@@ -138,7 +126,7 @@ export class DAOLancamentos {
         }, (error) => {
             console.log("getSaldo() - Erro carregamento do saldo: " + JSON.stringify(error.err));
         });
-    }, 1000);
+    }, 700);
   }
 
 
@@ -165,7 +153,7 @@ export class DAOLancamentos {
       }, (error) => {
           console.log("Erro na inserção do Lançamento: " + JSON.stringify(error.err));
       });
-    }, 1000);
+    }, 100);
   }
 
   edit(lancamento, successCallback) {
@@ -194,7 +182,7 @@ export class DAOLancamentos {
       }, (error) => {
           console.log("ERRO na atualização do Lançamento: " + JSON.stringify(error.err));
       });
-    }, 1000);
+    }, 100);
   }
 
   delete(lancamento, successCallback) {
@@ -205,7 +193,7 @@ export class DAOLancamentos {
       }, (error) => {
           console.log("ERRO na exclusão do Lançamento: " + JSON.stringify(error.err));
       });
-    }, 1000);
+    }, 100);
   }
 
 }

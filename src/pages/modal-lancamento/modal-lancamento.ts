@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
 
-import { DAOContas } from '../../app/dao/dao-contas';
+import { ContaProvider } from '../../providers/conta-provider';
 
 @Component({
   selector: 'page-modal-lancamento',
@@ -9,14 +9,16 @@ import { DAOContas } from '../../app/dao/dao-contas';
 })
 export class ModalLancamentoPage {
 
-  dao: any;
   lancamento: any;
   contas: any;
 
-  constructor(public viewCtrl: ViewController,params: NavParams) {
+  constructor(
+    public viewCtrl: ViewController,
+    public dao: ContaProvider,
+    params: NavParams
+  ) {
     this.viewCtrl = viewCtrl;
     this.lancamento = params.get("parametro") || {};
-    this.dao = new DAOContas;
     this.dao.getList((lista) => {
       this.contas = lista;
     });

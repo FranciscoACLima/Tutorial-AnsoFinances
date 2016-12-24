@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
-import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
+import { LancamentoProvider } from '../../providers/lancamento-provider';
 import { DataUtil } from '../../util/data-util';
 
 @Component({
@@ -10,16 +10,15 @@ import { DataUtil } from '../../util/data-util';
 })
 export class RelatorioPage {
 
-  dao: DAOLancamentos;
   dataFiltro: any;
   listaContas: any;
   entradaSaida: string;
 
   constructor(
     public navCtrl: NavController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    private dao: LancamentoProvider
   ) {
-    this.dao = new DAOLancamentos();
     this.entradaSaida = "entrada";
     this.dataFiltro = this.navParams.get("parametro");
     this._getList(this.entradaSaida);

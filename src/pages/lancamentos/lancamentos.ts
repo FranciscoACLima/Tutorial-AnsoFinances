@@ -3,7 +3,7 @@ import { Toast } from 'ionic-native';
 import { ModalController, AlertController, NavController, Events} from 'ionic-angular';
 
 import { ModalLancamentoPage } from '../modal-lancamento/modal-lancamento';
-import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
+import { LancamentoProvider } from '../../providers/lancamento-provider';
 import { RelatorioPage } from '../relatorio/relatorio';
 import { DataUtil } from '../../util/data-util';
 
@@ -13,7 +13,6 @@ import { DataUtil } from '../../util/data-util';
 })
 export class LancamentosPage implements OnInit{
 
-  dao: any;
   listLancamentos: any;
   dataFiltro: Date;
 
@@ -21,14 +20,14 @@ export class LancamentosPage implements OnInit{
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
     public navCtrl: NavController,
-    public events: Events
+    public events: Events,
+    public dao: LancamentoProvider
   ) {
-    this.events = events;
+
   }
 
   ngOnInit() {
     this.dataFiltro = new Date();
-    this.dao = new DAOLancamentos;
     this.getListaLancamentos();
   }
 
@@ -97,9 +96,7 @@ export class LancamentosPage implements OnInit{
             });
         });
       } else {
-        this.dao.getList((lista) => {
-          this.listLancamentos = lista;
-        });
+        this.getListaLancamentos();
       }
     });
     modal.present();

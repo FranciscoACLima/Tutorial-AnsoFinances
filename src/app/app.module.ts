@@ -13,6 +13,8 @@ import { StatusPgto } from '../pipes/status-pgto';
 import { DataFilterComponent} from '../components/data-filter/data-filter';
 import { SaldoPage } from '../pages/saldo/saldo';
 import { RelatorioPage } from '../pages/relatorio/relatorio';
+import { LancamentoProvider } from '../providers/lancamento-provider';
+import { ContaProvider } from '../providers/conta-provider'
 
 
 @NgModule({
@@ -46,6 +48,8 @@ import { RelatorioPage } from '../pages/relatorio/relatorio';
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    {provide: LancamentoProvider, useClass: LancamentoProvider},
+    {provide: ContaProvider, useClass: ContaProvider},
     {provide: LOCALE_ID, useValue: 'pt-BR'}
   ]
 })
