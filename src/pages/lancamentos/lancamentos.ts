@@ -4,6 +4,8 @@ import { ModalController, AlertController, NavController, Events} from 'ionic-an
 
 import { ModalLancamentoPage } from '../modal-lancamento/modal-lancamento';
 import { DAOLancamentos } from '../../app/dao/dao-lancamentos';
+import { RelatorioPage } from '../relatorio/relatorio';
+import { DataUtil } from '../../util/data-util';
 
 @Component({
   selector: 'page-lancamentos',
@@ -30,20 +32,17 @@ export class LancamentosPage implements OnInit{
     this.getListaLancamentos();
   }
 
+  onClickMoth() {
+    this.navCtrl.push(RelatorioPage, {parametro: this.dataFiltro});
+  }
+
   getListaLancamentos() {
-    let dataInicio = this._getInicioDoMes(this.dataFiltro);
-    let proxMes = new Date(this.dataFiltro);;
-    proxMes.setMonth(proxMes.getMonth() + 1);
-    let dataFim = this._getInicioDoMes(proxMes);
+    let dataUtil = new DataUtil();
+    let dataInicio = dataUtil.getFirstDay(this.dataFiltro);
+    let dataFim = dataUtil.getLastDay(this.dataFiltro);
     this.dao.getList(dataInicio, dataFim, (lista) => {
       this.listLancamentos = lista;
     });
-  }
-
-  private _getInicioDoMes(data: Date) {
-    let ano = data.getFullYear();
-    let mes = data.getMonth() + 1;
-    return ano + '-' + mes + '-01';
   }
 
   changePaymentStatus(lancamento) {
@@ -56,7 +55,6 @@ export class LancamentosPage implements OnInit{
   paymentButtonText(lancamento) {
     return lancamento.pago == 'true' ? "Reabrir" : "Pagar";
   }
-
 
   updateMonth(data) {
     this.listLancamentos = [];

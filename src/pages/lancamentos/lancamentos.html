@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <data-filter [startDate]="dataFiltro" (changeMonth)="updateMonth($event)"></data-filter>
+  <data-filter [startDate]="dataFiltro" (changeMonth)="updateMonth($event)" (clickMonth)="onClickMoth()"></data-filter>
   <ion-list>
     <ion-item-sliding *ngFor="let item of listLancamentos">
       <ion-item  [ngClass]="{entrada: lancamentoEntrada(item), saida: !lancamentoEntrada(item)}" (click)="edit(item)">
@@ -43,6 +43,7 @@
         </button>
       </ion-item-options>
     </ion-item-sliding>
+    <ion-item></ion-item>
   </ion-list>
   <!-- Botão Adicionar Lançamento -->
   <ion-fab bottom right >

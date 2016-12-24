@@ -32,17 +32,17 @@ export class DAOLancamentos {
     }, 800);
   }
 
-  getList(dataInicio, dataFim, sucessCallBack) {
+  getList(dataInicio, dataFim, successCallback) {
     setTimeout(function() {
       //this.database = new SQLite();
-      let sqlQuery = "SELECT * FROM lancamentos WHERE data >= ? and data < ?";
+      let sqlQuery = "SELECT * FROM lancamentos WHERE data >= ? and data <= ?";
       let list = [];
       this.database.openDatabase({
         name: "data.db",
         location: "default"
       }).then(() => {
         this.database.executeSql(sqlQuery, [dataInicio, dataFim]).then((data) => {
-          console.log("Qtde de Lancamentos" + JSON.stringify(data));
+          //console.log("Qtde de Lancamentos" + JSON.stringify(data));
           if(data.rows.length > 0) {
             for(let i = 0; i < data.rows.length; i++) {
               let lancamento = {
@@ -57,7 +57,7 @@ export class DAOLancamentos {
               list.push(lancamento);
             }
             //console.log(list);
-            sucessCallBack(list);
+            successCallback(list);
           }
         }, (error) => {
           console.log("getList() - ERRO na leitura da Tabela: " + JSON.stringify(error));
@@ -67,6 +67,46 @@ export class DAOLancamentos {
       });
     }, 1000);
   }
+
+  getListGroupByConta(dataInicio, dataFim, entradaSaida, successCallback) {
+    setTimeout(function() {
+      let sqlQuery = `
+      SELECT conta, TOTAL(valor) as saldoConta FROM lancamentos
+      where data >= ? and data <= ? and entradaSaida = ?
+      and pago = 'true'
+      GROUP BY conta`;
+      let list = [];
+      this.database.openDatabase({
+        name: "data.db",
+        location: "default"
+      }).then(() => {
+        this.database.executeSql(sqlQuery, [
+            dataInicio,
+            dataFim,
+            entradaSaida])
+        .then((data) => {
+          //console.log("Qtde Grupos de Contas" + JSON.stringify(data));
+          if(data.rows.length > 0) {
+            for(let i = 0; i < data.rows.length; i++) {
+              let conta = {
+              conta: data.rows.item(i).conta,
+              saldo: data.rows.item(i).saldoConta,
+              percentual: 0.0
+              };
+              list.push(conta);
+            }
+            //console.log(list);
+            successCallback(list);
+          }
+        }, (error) => {
+          console.log("getList() - ERRO na leitura da Tabela: " + JSON.stringify(error));
+        });
+      }, (error) => {
+        console.error("getList() - Erro na abertura do banco de dados", error);
+      });
+    }, 1000);
+  }
+
 
   getSaldo(successCallback) {
     let sqlQuery = `
@@ -102,7 +142,7 @@ export class DAOLancamentos {
   }
 
 
-  insert(lancamento, sucessCallBack) {
+  insert(lancamento, successCallback) {
     let sqlQuery = `
       INSERT INTO lancamentos(
         descricao,
@@ -121,7 +161,7 @@ export class DAOLancamentos {
         lancamento.entradaSaida,
         lancamento.pago]).then((data) => {
           lancamento.id = data.insertId;
-          sucessCallBack(lancamento);
+          successCallback(lancamento);
       }, (error) => {
           console.log("Erro na inserção do Lançamento: " + JSON.stringify(error.err));
       });
