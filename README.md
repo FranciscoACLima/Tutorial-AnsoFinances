@@ -8,5 +8,18 @@ Com este repositório estou passando o curso, aula a aula, e fazendo as adaptaç
 As alterações mais importantes estão sendo relacionadas nesta WikiPage:
 https://github.com/FranciscoACLima/Tutorial-AnsoFinances/wiki
 
+Para testar a versão final sem seguir todos os vídeos, faça o clone ou download do projeto e dentro dele use os comandos:
+
+npm install
+
+ionic plugin add cordova-sqlite-storage
+
+ionic plugin add cordova-plugin-x-toast
+
+cordova platform add android
+
+ionic run android
+
+
 Bons estudos!!!
 FranciscoACLima
